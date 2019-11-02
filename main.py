@@ -14,7 +14,7 @@ def show_tracks(tracks):
 
 username = input("Enter the username: ")
 user_playlist = input("Enter the playlist that you want a song recommeneded for: ")
-
+scope = ""
 
 token = util.prompt_for_user_token(username,client_id='d7f8b5638bde46cd9f6089a637586e61',client_secret='',redirect_uri='http://localhost/')
 
