@@ -232,18 +232,18 @@ def predict(parameters, X):
 
 
 #IMPLEMENTATION
-learning_rates = [1.2]
-for lr in learning_rates:
-    # Build model
-    print('With learning rate of: ' + str(lr))
-    parameters = nn_model(X, Y, n_h = 4, num_iterations = 10000, print_cost=True, learning_rate = lr)
-    print(" ")
-    # Print accuracy
-    predictions = predict(parameters, X)
-    print("train accuracy: {} %".format(100 - np.mean(np.abs(predictions - Y)) * 100))
-    predictions = predict(parameters, X_test)
-    print("test accuracy: {} %".format(100 - np.mean(np.abs(predictions - Y_test)) * 100))
-    print(" ")
+
+# Build model
+parameters = nn_model(X, Y, n_h = 4, num_iterations = 10000, print_cost=True, learning_rate = 1.2)
+print(" ")
+# Print accuracy
+predictions = predict(parameters, X)
+print("train accuracy: {} %".format(100 - np.mean(np.abs(predictions - Y)) * 100))
+predictions = predict(parameters, X_test)
+print("test accuracy: {} %".format(100 - np.mean(np.abs(predictions - Y_test)) * 100))
+print(" ")
+print(predictions)
+print(Y_test)
 
 
 
