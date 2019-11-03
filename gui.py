@@ -102,7 +102,7 @@ class MyFirstGUI(object):
         try:
             token = util.prompt_for_user_token(username,scope,client_id='d7f8b5638bde46cd9f6089a637586e61',client_secret='e04315c74de9416599a087895e24b01b',redirect_uri='http://localhost/')
         except (AttributeError, JSONDecodeError):
-            os.remove(f".cache-{username}")
+            #os.remove(f".cache-{username}")
             token = util.prompt_for_user_token(username,scope,client_id='d7f8b5638bde46cd9f6089a637586e61',client_secret='e04315c74de9416599a087895e24b01b',redirect_uri='http://localhost/')
 
         # Empty id list and possibly faulty dictionary list
@@ -320,7 +320,6 @@ class MyFirstGUI(object):
         X_test = selection_x
 
         #-------------------------------------------------------------------------------
-        np.random.seed(1) # set a seed so that the results are consistent
 
 
         def sigmoid(x):
