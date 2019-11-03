@@ -6,10 +6,10 @@ from json.decoder import JSONDecodeError
 
 
 username = "kevinphilipc"
-user_playlist = "Train"
+user_playlist = "Test"
 
-xout = "x_train"
-yout = "y_train"
+xout = "x0_test.csv"
+yout = "y0_test.csv"
 scope = 'playlist-read-private'
 
 
@@ -66,11 +66,14 @@ for i in range(n):
 
 print(x)
 
-y = np.zeros((n, 1))
+y = np.zeros((1, n))
 for i in range(n//2):
-    y[i][0] = 1
+    y[0][i] = 1
 
 print(y)
+
+np.savetxt(xout, x, delimiter=",")
+np.savetxt(yout, y, delimiter=",")
 
 
 
