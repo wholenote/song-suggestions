@@ -503,7 +503,7 @@ class MyFirstGUI(object):
         print()
         # Print accuracy
         predictions = predict(parameters, X)
-        self.run.insert(END, "\nAccuracy during training: {} %".format(100 - np.mean(np.abs(predictions - Y)) * 100))
+        # self.run.insert(END, "\nAccuracy during training: {} %".format(100 - np.mean(np.abs(predictions - Y)) * 100))
         predictions = predict(parameters, X_test)
         #-------------------------------------------------------------------------------
 
@@ -512,12 +512,19 @@ class MyFirstGUI(object):
 
         # Prints the songs that would be liked.
         self.out.insert(END, "Songs that you would like from " +selection+ " based on your entries:\n\n")
-        if len(predictions[0] == 0):
+        if len(predictions[0]) == 0:
+            print(len(predictions[0]))
             self.out.insert(END, "No songs seem to be to your liking.")
         else:
+            print(len(predictions[0]))
+            counter = 1
             for i in range(len(predictions[0])):
                 if final_result[0][i] == True:
                     self.out.insert(END,final_result[1][i] +": "+final_result[2][i] +"\n" )
+                else:
+                    counter += 1
+            if counter == len(predictions[0]):
+                self.out.insert(END, "No songs seem to be to your liking.")
 
 
 root = Tk()
