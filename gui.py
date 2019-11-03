@@ -513,9 +513,12 @@ class MyFirstGUI(object):
 
         # Prints the songs that would be liked.
         self.out.insert(END, "Songs that you would like from " +selection+ " based on your entries:\n\n")
-        for i in range(len(predictions[0])):
-            if final_result[0][i] == True:
-                self.out.insert(END,final_result[1][i] +": "+final_result[2][i] +"\n" )
+        if len(predictions[0] == 0):
+            self.out.insert(END, "No songs seem to be to your liking.")
+        else:
+            for i in range(len(predictions[0])):
+                if final_result[0][i] == True:
+                    self.out.insert(END,final_result[1][i] +": "+final_result[2][i] +"\n" )
 
 
 root = Tk()
