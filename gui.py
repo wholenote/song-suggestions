@@ -500,10 +500,8 @@ class MyFirstGUI(object):
 
         # Build model
         parameters = nn_model(X, Y, n_h = 4, num_iterations = 10000, print_cost=True, learning_rate = 1.2)
-        print()
         # Print accuracy
         predictions = predict(parameters, X)
-        # self.run.insert(END, "\nAccuracy during training: {} %".format(100 - np.mean(np.abs(predictions - Y)) * 100))
         predictions = predict(parameters, X_test)
         #-------------------------------------------------------------------------------
 
