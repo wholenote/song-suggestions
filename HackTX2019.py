@@ -312,7 +312,7 @@ def predict(parameters, X):
 
 
 #IMPLEMENTATION
-learning_rates = [1.2, 0.1, 0.01, 0.001]
+learning_rates = [1.2]
 for lr in learning_rates:
     # Build model
     print('With learning rate of: ' + str(lr))
@@ -320,9 +320,9 @@ for lr in learning_rates:
     print(" ")
     # Print accuracy
     predictions = predict(parameters, X)
-    print ('Training Accuracy: %d' % float((np.dot(Y,predictions.T) + np.dot(1-Y,1-predictions.T))/float(Y.size)*100) + '%')
+    print("train accuracy: {} %".format(100 - np.mean(np.abs(predictions - Y)) * 100))
     predictions = predict(parameters, X_test)
-    print ('Test Accuracy: %d' % float((np.dot(Y_test,predictions.T) + np.dot(1-Y_test,1-predictions.T))/float(Y.size)*100) + '%')
+    print("test accuracy: {} %".format(100 - np.mean(np.abs(predictions - Y_test)) * 100))
     print(" ")
 
 
