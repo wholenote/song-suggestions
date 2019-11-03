@@ -327,12 +327,6 @@ class MyFirstGUI(object):
             return s
 
 
-        #Shape of data sets
-        shape_X = X.shape
-        shape_Y = Y.shape
-        m = X.shape[1]  # training set size
-
-
         def layer_sizes(X, Y):
             n_x = len(X[:,0])
             n_h = 4
