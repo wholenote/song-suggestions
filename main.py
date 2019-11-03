@@ -1,7 +1,7 @@
 import os
 import spotipy
 import spotipy.util as util
-import numpy
+import numpy as np
 from json.decoder import JSONDecodeError
 
 username = "kevinphilipc"
@@ -29,12 +29,44 @@ if token:
                 a = track['id']
                 feat = sp.audio_features(a)[0]
                 features.append(feat)
-
-
 else:
     print("Can't get token for", username)
 
-print(song_ids)
-print(features)
+
+#print(song_ids)
+#print(features)
+
+n = len(song_ids)
+x = np.zeros((8, n))
+
+for i in range(n):
+    dance = features[i]['danceability']
+    energy = features[i]['energy']
+    mode = float(features[i]['mode'])
+    speech = features[i]['speechiness']
+    acoustic = features[i]['acousticness']
+    instrumental = features[i]['instrumentalness']
+    liveness = features[i]['liveness']
+    valence = features[i]['valence']
+
+    x[0][i] = dance
+    x[1][i] = energy
+    x[2][i] = mode
+    x[3][i] = speech
+    x[4][i] = acoustic
+    x[5][i] = instrumental
+    x[6][i] = liveness
+    x[7][i] = valence
+
+print(x)
+
+y = np.zeros((1, n))
+
+
+
+
+
+
+
 
 
