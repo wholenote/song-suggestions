@@ -1,12 +1,139 @@
+#Get data from Spotify
 
+import os
+import spotipy
+import spotipy.util as util
+import numpy as np
+from json.decoder import JSONDecodeError
+
+
+username = "kevinphilipc"
+user_playlist = "Train"
+scope = 'playlist-read-private'
+try:
+    token = util.prompt_for_user_token(username,scope,client_id='d7f8b5638bde46cd9f6089a637586e61',client_secret='e04315c74de9416599a087895e24b01b',redirect_uri='http://localhost/')
+except (AttributeError, JSONDecodeError):
+    os.remove(f".cache-{username}")
+    token = util.prompt_for_user_token(username,scope,client_id='d7f8b5638bde46cd9f6089a637586e61',client_secret='e04315c74de9416599a087895e24b01b',redirect_uri='http://localhost/')
+
+song_ids = []
+features = []
+
+if token:
+    sp = spotipy.Spotify(auth=token)
+    playlists = sp.user_playlists(username)
+    for playlist in playlists['items']:
+        if playlist['name'] == user_playlist:
+            results = sp.user_playlist(username, playlist['id'], fields="tracks,next")
+            tracks = results['tracks']
+            for item in tracks['items']:
+                track = item['track']
+                song_ids.append(track['id'])
+                a = track['id']
+                feat = sp.audio_features(a)[0]
+                features.append(feat)
+else:
+    print("Can't get token for", username)
+
+
+#print(song_ids)
+#print(features)
+
+n = len(song_ids)
+X = np.zeros((8, n))
+
+for i in range(n):
+    dance = features[i]['danceability']
+    energy = features[i]['energy']
+    mode = float(features[i]['mode'])
+    speech = features[i]['speechiness']
+    acoustic = features[i]['acousticness']
+    instrumental = features[i]['instrumentalness']
+    liveness = features[i]['liveness']
+    valence = features[i]['valence']
+
+    X[0][i] = dance
+    X[1][i] = energy
+    X[2][i] = mode
+    X[3][i] = speech
+    X[4][i] = acoustic
+    X[5][i] = instrumental
+    X[6][i] = liveness
+    X[7][i] = valence
+
+
+
+Y = np.zeros((n, 1))
+for i in range(n//2):
+    Y[i][0] = 1
+
+
+
+username = "kevinphilipc"
+user_playlist = "Test"
+scope = 'playlist-read-private'
+try:
+    token = util.prompt_for_user_token(username,scope,client_id='d7f8b5638bde46cd9f6089a637586e61',client_secret='e04315c74de9416599a087895e24b01b',redirect_uri='http://localhost/')
+except (AttributeError, JSONDecodeError):
+    os.remove(f".cache-{username}")
+    token = util.prompt_for_user_token(username,scope,client_id='d7f8b5638bde46cd9f6089a637586e61',client_secret='e04315c74de9416599a087895e24b01b',redirect_uri='http://localhost/')
+
+song_ids = []
+features = []
+
+if token:
+    sp = spotipy.Spotify(auth=token)
+    playlists = sp.user_playlists(username)
+    for playlist in playlists['items']:
+        if playlist['name'] == user_playlist:
+            results = sp.user_playlist(username, playlist['id'], fields="tracks,next")
+            tracks = results['tracks']
+            for item in tracks['items']:
+                track = item['track']
+                song_ids.append(track['id'])
+                a = track['id']
+                feat = sp.audio_features(a)[0]
+                features.append(feat)
+else:
+    print("Can't get token for", username)
+
+m = len(song_ids)
+X_test = np.zeros((8, m))
+
+for i in range(m):
+    dance = features[i]['danceability']
+    energy = features[i]['energy']
+    mode = float(features[i]['mode'])
+    speech = features[i]['speechiness']
+    acoustic = features[i]['acousticness']
+    instrumental = features[i]['instrumentalness']
+    liveness = features[i]['liveness']
+    valence = features[i]['valence']
+
+    X_test[0][i] = dance
+    X_test[1][i] = energy
+    X_test[2][i] = mode
+    X_test[3][i] = speech
+    X_test[4][i] = acoustic
+    X_test[5][i] = instrumental
+    X_test[6][i] = liveness
+    X_test[7][i] = valence
+
+
+
+Y_test = np.zeros((m, 1))
+for i in range(m//2):
+    Y_test[i][0] = 1
+
+
+
+#-------------------------------------------------------------------------------------------------------------------------------
 # Package imports
 import numpy as np
 
+
 np.random.seed(1) # set a seed so that the results are consistent
 
-def load_dataset():
-
-    return
     
 def sigmoid(x):
     s = 1/(1+np.exp(-x))

@@ -4,6 +4,7 @@ import spotipy.util as util
 import numpy as np
 from json.decoder import JSONDecodeError
 
+
 username = "kevinphilipc"
 user_playlist = "Train"
 scope = 'playlist-read-private'
