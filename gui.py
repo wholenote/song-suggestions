@@ -96,10 +96,10 @@ class MyFirstGUI(object):
         # API authentication
         self.run.insert(END, "Authenticating Spotify API...\n")
         try:
-            token = util.prompt_for_user_token(username,scope,client_id='d7f8b5638bde46cd9f6089a637586e61',client_secret='e04315c74de9416599a087895e24b01b',redirect_uri='http://localhost/')
+            token = util.prompt_for_user_token(username,scope,client_id='6a77e43727a3423ca1bd65f747763dc7',client_secret='4b0f03b17bac47a29d83225ed54b0e8b',redirect_uri='http://localhost/')
         except (AttributeError, JSONDecodeError):
-            #os.remove(f".cache-{username}")
-            token = util.prompt_for_user_token(username,scope,client_id='d7f8b5638bde46cd9f6089a637586e61',client_secret='e04315c74de9416599a087895e24b01b',redirect_uri='http://localhost/')
+            os.remove(f".cache-{username}")
+            token = util.prompt_for_user_token(username,scope,client_id='6a77e43727a3423ca1bd65f747763dc7',client_secret='4b0f03b17bac47a29d83225ed54b0e8b',redirect_uri='http://localhost/')
 
         liked_faultfeatures = []
         disliked_faultfeatures = []
