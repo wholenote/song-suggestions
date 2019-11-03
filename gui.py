@@ -90,25 +90,16 @@ class MyFirstGUI(object):
         disliked= self.entry3.get()
         selection = self.entry4.get()
 
-        # Set manually
+        # Set read/write permissions manually
         scope = 'playlist-read-private'
 
-        # Function that is used to add track attributes to features list.
-        def show_tracks(results):
-            for i, item in enumerate(results['items']):
-                track = item['track']
-
-        # Checks the autentication.
+        # API authentication
+        self.run.insert(END, "Authenticating Spotify API...\n")
         try:
             token = util.prompt_for_user_token(username,scope,client_id='d7f8b5638bde46cd9f6089a637586e61',client_secret='e04315c74de9416599a087895e24b01b',redirect_uri='http://localhost/')
         except (AttributeError, JSONDecodeError):
             #os.remove(f".cache-{username}")
             token = util.prompt_for_user_token(username,scope,client_id='d7f8b5638bde46cd9f6089a637586e61',client_secret='e04315c74de9416599a087895e24b01b',redirect_uri='http://localhost/')
-
-        # Empty id list and possibly faulty dictionary list
-        liked_song_ids = []
-        disliked_song_ids = []
-        selection_song_ids = []
 
         liked_faultfeatures = []
         disliked_faultfeatures = []
@@ -117,72 +108,47 @@ class MyFirstGUI(object):
         final_faultnames = []
         final_faultartist = []
 
-        # Fills liked_faultfeatures with the dictionaries for the songs.
+        # Fills liked_faultfeatures, disliked with the dictionaries for the songs.
         if token:
             sp = spotipy.Spotify(auth=token)
             playlists = sp.user_playlists(username)
+            self.run.insert(END, "Retreiving playlists from Spotify...\n")
             for playlist in playlists['items']:
                 if playlist['name'] == liked:
                     results = sp.user_playlist(username, playlist['id'], fields="tracks,next")
                     tracks = results['tracks']
-                    show_tracks(tracks)
                     for item in tracks['items']:
                         track = item['track']
-                        liked_song_ids.append(track['id'])
                         a = track['id']
                         feat = sp.audio_features(a)[0]
                         liked_faultfeatures.append(feat)
                     while tracks['next']:
                             tracks = sp.next(tracks)
-                            show_tracks(tracks)
                             for item in tracks['items']:
                                 track = item['track']
-                                liked_song_ids.append(track['id'])
                                 a = track['id']
                                 feat = sp.audio_features(a)[0]
                                 liked_faultfeatures.append(feat)
-        else:
-            print("Can't get token for", username)
-
-        # Fills disliked_faultfeatures with the dictionaries for the songs.
-        if token:
-            sp = spotipy.Spotify(auth=token)
-            playlists = sp.user_playlists(username)
-            for playlist in playlists['items']:
                 if playlist['name'] == disliked:
                     results = sp.user_playlist(username, playlist['id'], fields="tracks,next")
                     tracks = results['tracks']
-                    show_tracks(tracks)
                     for item in tracks['items']:
                         track = item['track']
-                        disliked_song_ids.append(track['id'])
                         a = track['id']
                         feat = sp.audio_features(a)[0]
                         disliked_faultfeatures.append(feat)
                     while tracks['next']:
                             tracks = sp.next(tracks)
-                            show_tracks(tracks)
                             for item in tracks['items']:
                                 track = item['track']
-                                disliked_song_ids.append(track['id'])
                                 a = track['id']
                                 feat = sp.audio_features(a)[0]
                                 disliked_faultfeatures.append(feat)
-        else:
-            print("Can't get token for", username)
-
-        # Fills selection_faultfeatures with the dictionaries for the songs.
-        if token:
-            sp = spotipy.Spotify(auth=token)
-            playlists = sp.user_playlists(username)
-            for playlist in playlists['items']:
                 if playlist['name'] == selection:
                     results = sp.user_playlist(username, playlist['id'], fields="tracks,next")
                     tracks = results['tracks']
-                    show_tracks(tracks)
                     for item in tracks['items']:
                         track = item['track']
-                        selection_song_ids.append(track['id'])
                         final_faultnames.append(track['name'])
                         final_faultartist.append(track['artists'][0]['name'])
                         a = track['id']
@@ -190,10 +156,8 @@ class MyFirstGUI(object):
                         selection_faultfeatures.append(feat)
                     while tracks['next']:
                             tracks = sp.next(tracks)
-                            show_tracks(tracks)
                             for item in tracks['items']:
                                 track = item['track']
-                                selection_song_ids.append(track['id'])
                                 final_faultnames.append(track['name'])
                                 final_faultartist.append(track['artists'][0]['name'])
                                 a = track['id']
@@ -241,10 +205,6 @@ class MyFirstGUI(object):
                 final_names.append(final_faultnames[i])
                 final_artists.append(final_faultartist[i])
 
-        # Turns the liked y into arrays.
-        liked_array = np.array(liked_y)
-        disliked_array = np.array(disliked_y)
-
         # Creates empty np arrays for all 3.
         liked_n = len(liked_features)
         disliked_n = len(disliked_features)
@@ -256,63 +216,36 @@ class MyFirstGUI(object):
 
         # Fills the liked x with its feature values.
         for i in range(liked_n):
-            dance = liked_features[i]['danceability']
-            energy = liked_features[i]['energy']
-            mode = float(liked_features[i]['mode'])
-            speech = liked_features[i]['speechiness']
-            acoustic = liked_features[i]['acousticness']
-            instrumental = liked_features[i]['instrumentalness']
-            liveness = liked_features[i]['liveness']
-            valence = liked_features[i]['valence']
-
-            liked_x[0][i] = dance
-            liked_x[1][i] = energy
-            liked_x[2][i] = mode
-            liked_x[3][i] = speech
-            liked_x[4][i] = acoustic
-            liked_x[5][i] = instrumental
-            liked_x[6][i] = liveness
-            liked_x[7][i] = valence
+            liked_x[0][i] = liked_features[i]['danceability']
+            liked_x[1][i] = liked_features[i]['energy']
+            liked_x[2][i] = float(liked_features[i]['mode'])
+            liked_x[3][i] = liked_features[i]['speechiness']
+            liked_x[4][i] = liked_features[i]['acousticness']
+            liked_x[5][i] = liked_features[i]['instrumentalness']
+            liked_x[6][i] = liked_features[i]['liveness']
+            liked_x[7][i] = liked_features[i]['valence']
 
         # Fills the disliked x with its feature values.
         for i in range(disliked_n):
-            dance = disliked_features[i]['danceability']
-            energy = disliked_features[i]['energy']
-            mode = float(disliked_features[i]['mode'])
-            speech = disliked_features[i]['speechiness']
-            acoustic = disliked_features[i]['acousticness']
-            instrumental = disliked_features[i]['instrumentalness']
-            liveness = disliked_features[i]['liveness']
-            valence = disliked_features[i]['valence']
-
-            disliked_x[0][i] = dance
-            disliked_x[1][i] = energy
-            disliked_x[2][i] = mode
-            disliked_x[3][i] = speech
-            disliked_x[4][i] = acoustic
-            disliked_x[5][i] = instrumental
-            disliked_x[6][i] = liveness
-            disliked_x[7][i] = valence
+            disliked_x[0][i] = disliked_features[i]['danceability']
+            disliked_x[1][i] = disliked_features[i]['energy']
+            disliked_x[2][i] = float(disliked_features[i]['mode'])
+            disliked_x[3][i] = disliked_features[i]['speechiness']
+            disliked_x[4][i] = disliked_features[i]['acousticness']
+            disliked_x[5][i] = disliked_features[i]['instrumentalness']
+            disliked_x[6][i] = disliked_features[i]['liveness']
+            disliked_x[7][i] = disliked_features[i]['valence']
 
         # Fills the selection x with its feature values.
         for i in range(selection_n):
-            dance = selection_features[i]['danceability']
-            energy = selection_features[i]['energy']
-            mode = float(selection_features[i]['mode'])
-            speech = selection_features[i]['speechiness']
-            acoustic = selection_features[i]['acousticness']
-            instrumental = selection_features[i]['instrumentalness']
-            liveness = selection_features[i]['liveness']
-            valence = selection_features[i]['valence']
-
-            selection_x[0][i] = dance
-            selection_x[1][i] = energy
-            selection_x[2][i] = mode
-            selection_x[3][i] = speech
-            selection_x[4][i] = acoustic
-            selection_x[5][i] = instrumental
-            selection_x[6][i] = liveness
-            selection_x[7][i] = valence
+            selection_x[0][i] = selection_features[i]['danceability']
+            selection_x[1][i] = selection_features[i]['energy']
+            selection_x[2][i] = float(selection_features[i]['mode'])
+            selection_x[3][i] = selection_features[i]['speechiness']
+            selection_x[4][i] = selection_features[i]['acousticness']
+            selection_x[5][i] = selection_features[i]['instrumentalness']
+            selection_x[6][i] = selection_features[i]['liveness']
+            selection_x[7][i] = selection_features[i]['valence']
 
         # Merges the liked and disliked data sets.
         X = np.concatenate((liked_x, disliked_x),axis=1)
@@ -505,14 +438,12 @@ class MyFirstGUI(object):
         # Prints the songs that would be liked.
         self.out.insert(END, "Songs that you would like from " +selection+ " based on your entries:\n\n")
         if len(predictions[0]) == 0:
-            print(len(predictions[0]))
             self.out.insert(END, "No songs seem to be to your liking.")
         else:
-            print(len(predictions[0]))
             counter = 1
             for i in range(len(predictions[0])):
                 if final_result[0][i] == True:
-                    self.out.insert(END,final_result[1][i] +": "+final_result[2][i] +"\n" )
+                    self.out.insert(END, final_result[1][i] +": "+final_result[2][i] +"\n")
                 else:
                     counter += 1
             if counter == len(predictions[0]):
