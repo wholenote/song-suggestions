@@ -13,7 +13,7 @@ scope = 'playlist-read-private'
 try:
     token = util.prompt_for_user_token(username,scope,client_id='d7f8b5638bde46cd9f6089a637586e61',client_secret='e04315c74de9416599a087895e24b01b',redirect_uri='http://localhost/')
 except (AttributeError, JSONDecodeError):
-    os.remove(f".cache-{username}")
+    #os.remove(f".cache-{username}")
     token = util.prompt_for_user_token(username,scope,client_id='d7f8b5638bde46cd9f6089a637586e61',client_secret='e04315c74de9416599a087895e24b01b',redirect_uri='http://localhost/')
 
 song_ids = []
@@ -75,7 +75,7 @@ scope = 'playlist-read-private'
 try:
     token = util.prompt_for_user_token(username,scope,client_id='d7f8b5638bde46cd9f6089a637586e61',client_secret='e04315c74de9416599a087895e24b01b',redirect_uri='http://localhost/')
 except (AttributeError, JSONDecodeError):
-    os.remove(f".cache-{username}")
+    #os.remove(f".cache-{username}")
     token = util.prompt_for_user_token(username,scope,client_id='d7f8b5638bde46cd9f6089a637586e61',client_secret='e04315c74de9416599a087895e24b01b',redirect_uri='http://localhost/')
 
 song_ids = []
@@ -125,7 +125,8 @@ Y_test = np.zeros((m, 1))
 for i in range(m//2):
     Y_test[i][0] = 1
 
-
+Y= Y.T
+Y_test = Y_test.T
 
 #-------------------------------------------------------------------------------------------------------------------------------
 # Package imports
@@ -140,8 +141,6 @@ def sigmoid(x):
     return s
 
 
-X, Y, X_test, Y_test = load_dataset()
-
 #Shape of data sets
 shape_X = X.shape
 shape_Y = Y.shape
@@ -149,9 +148,9 @@ m = X.shape[1]  # training set size
 
 
 def layer_sizes(X, Y):
-    n_x = len(X[:,1])
+    n_x = len(X[:,0])
     n_h = 4
-    n_y = len(Y[:, 1])
+    n_y = len(Y[:, 0])
 
     return (n_x, n_h, n_y)
 
@@ -313,11 +312,11 @@ def predict(parameters, X):
 
 
 #IMPLEMENTATION
-learning_rates = [1.2]
-for learning_rate in learning_rates:
+learning_rates = [1.2, 0.1, 0.01, 0.001]
+for lr in learning_rates:
     # Build model
-    print('With learning rate of: ' + str(learning_rate))
-    parameters = nn_model(X, Y, n_h = 4, num_iterations = 10000, print_cost=True, learning_rate)
+    print('With learning rate of: ' + str(lr))
+    parameters = nn_model(X, Y, n_h = 4, num_iterations = 10000, print_cost=True, learning_rate = lr)
     print(" ")
     # Print accuracy
     predictions = predict(parameters, X)
